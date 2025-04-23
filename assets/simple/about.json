@@ -1,0 +1,6 @@
+---
+---
+{
+    "contentTemplate": "<p>Hello from about.json</p>",
+    "headTemplate": "<title>about.json</title>"
+}

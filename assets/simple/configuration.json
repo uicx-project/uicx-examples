@@ -1,0 +1,14 @@
+---
+---
+{
+    "baseURL": "{{ "/assets/simple/" | absolute_url }}",
+    "webviewBaseURL": "{{ "/assets/simple/" | absolute_url }}",
+    "deeplinks": {
+        "/": "{{ "/home.json?v=" | append: site.github.build_revision }}",
+        "/about": "{{ "/about.json?v=" | append: site.github.build_revision }}"
+    },
+    "tapbar": {
+        "Home": "/",
+        "About": "/about"
+    }
+}
