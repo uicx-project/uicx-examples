@@ -1,10 +1,18 @@
 import { StatusBar } from 'expo-status-bar';
-import { useCallback, useEffect, useState } from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import { useEffect, useState } from 'react';
+import {ActivityIndicator, StyleSheet, Text, View} from 'react-native';
 import * as SplashScreen from 'expo-splash-screen';
-import { AppContext, type Configuration, isConfiguration } from './AppContext';
+import { AppContext } from './utils/AppContext';
+import Root from "./components/Root";
+import {Configuration, isConfiguration} from "./utils/uicx";
+import * as React from "react";
 
 SplashScreen.preventAutoHideAsync();
+
+SplashScreen.setOptions({
+  duration: 1000,
+  fade: true,
+});
 
 export default function App() {
   const [configuration, setConfiguration] = useState<false | null | Configuration>(null);
@@ -29,16 +37,10 @@ export default function App() {
     prepare();
   }, []);
 
-  const onLayoutRootView = useCallback(() => {
-    if (configuration) {
-      SplashScreen.hide();
-    }
-  }, [configuration]);
-
   if (configuration === null) {
     return (
       <View style={styles.container}>
-          <Text>Loading.</Text>
+          <ActivityIndicator />
           <StatusBar style="auto" />
       </View>
     );
@@ -55,10 +57,7 @@ export default function App() {
 
   return (
     <AppContext.Provider value={configuration}>
-      <View style={styles.container} onLayout={onLayoutRootView}>
-          <Text>Open up App.tsx to start working on your app!</Text>
-          <StatusBar style="auto" />
-      </View>
+      <Root />
     </AppContext.Provider>
   );
 }
