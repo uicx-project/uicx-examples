@@ -1,6 +1,7 @@
 ---
 ---
 {
+  "headerTitle": "Basic UICX",
   "baseURL": "{{ "/assets/basic/" | absolute_url }}",
   "webviewBaseURL": "{{ ",/assets/basic/" | absolute_url }}",
   "deeplinks": {
