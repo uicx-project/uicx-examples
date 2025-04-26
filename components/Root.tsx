@@ -1,20 +1,19 @@
 import * as React from 'react';
-import {AppContext} from "../utils/AppContext";
-import {NavigationContainer} from "@react-navigation/native";
+import {NavigationContainer, } from "@react-navigation/native";
 import {createNativeStackNavigator, NativeStackScreenProps} from "@react-navigation/native-stack";
 import UICXScreen from "../screens/UICXScreen";
 import {createBottomTabNavigator} from "@react-navigation/bottom-tabs";
 import type {RootStackParamList, RootTabStackParamList, TabsStackParamList} from "../utils/types";
-import {useCallback} from "react";
-import * as SplashScreen from "expo-splash-screen";
 import {Configuration} from "../utils/uicx";
+import {Pressable, Text} from "react-native";
+import {useApp} from "../state/app";
 
 const Stack = createNativeStackNavigator<RootTabStackParamList | RootStackParamList>();
 const Tab = createBottomTabNavigator<TabsStackParamList>();
 
 const TabNavigator: React.FC<NativeStackScreenProps<RootTabStackParamList, 'Root'>> = ({route}) => {
     return (
-        <Tab.Navigator screenOptions={{headerShown: true}}>
+        <Tab.Navigator screenOptions={{headerShown: false}}>
             {Object.keys(route.params.tabs).map(name => (
                 <React.Fragment key={name}>
                     <Tab.Screen
@@ -29,17 +28,19 @@ const TabNavigator: React.FC<NativeStackScreenProps<RootTabStackParamList, 'Root
     )
 }
 
-const Navigator: React.FC<{ configuration: Configuration }> = ({configuration}) => {
-    const onReady = useCallback(() => {
-        setTimeout(() => {
-            SplashScreen.hide();
-        }, 1000);
-    }, []);
+export default function Root(): React.ReactNode {
+    const resetApp = useApp(state => state.resetApp);
+    const configuration = useApp(state => state.configuration as Configuration);
 
     if (configuration?.tapbar) {
         return (
-            <NavigationContainer onReady={onReady}>
-                <Stack.Navigator screenOptions={{headerShown: false}}>
+            <NavigationContainer>
+                <Stack.Navigator screenOptions={{
+                    headerTitle: configuration.headerTitle,
+                    headerRight: () => <Pressable onPress={() => {
+                        resetApp()
+                    }}><Text>Switch</Text></Pressable>
+                }}>
                     <Stack.Screen
                         name="Root"
                         component={TabNavigator}
@@ -56,8 +57,13 @@ const Navigator: React.FC<{ configuration: Configuration }> = ({configuration}) 
     }
 
     return (
-        <NavigationContainer onReady={onReady}>
-            <Stack.Navigator>
+        <NavigationContainer>
+            <Stack.Navigator screenOptions={{
+                headerTitle: configuration.headerTitle,
+                headerRight: () => <Pressable onPress={() => {
+                    resetApp()
+                }}><Text>Switch</Text></Pressable>
+            }}>
                 <Stack.Screen
                     name="Root"
                     component={UICXScreen}
@@ -66,8 +72,4 @@ const Navigator: React.FC<{ configuration: Configuration }> = ({configuration}) 
             </Stack.Navigator>
         </NavigationContainer>
     );
-}
-
-export default function Root(): React.ReactNode {
-    return <AppContext.Consumer>{(value) => <Navigator configuration={value}/>}</AppContext.Consumer>
 }

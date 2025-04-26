@@ -3,7 +3,6 @@ import type {RootScreenProps, TabScreenProps} from "../utils/types";
 import {ActivityIndicator, Platform, StyleSheet, Text, View} from "react-native";
 import {State, useUICX} from "../utils/hooks";
 import {WebView} from "react-native-webview";
-import * as SplashScreen from "expo-splash-screen";
 
 const UICXScreen: React.FC<TabScreenProps | RootScreenProps> = ({route}) => {
     const [state, content] = useUICX(route.params.url);
@@ -24,8 +23,6 @@ const UICXScreen: React.FC<TabScreenProps | RootScreenProps> = ({route}) => {
         );
     }
 
-
-
     if (Platform.OS === 'web') {
         return (
             <View style={styles.container}>
@@ -35,16 +32,14 @@ const UICXScreen: React.FC<TabScreenProps | RootScreenProps> = ({route}) => {
     }
 
     return (
-
         <WebView
             originWhitelist={['*']}
             source={{ html: content as string }}
             style={styles.container}
-            onLayout={() => SplashScreen.hide()}
             startInLoadingState={true}
+            bounces={false}
             renderLoading={() => <ActivityIndicator />}
         />
-
     );
 
 

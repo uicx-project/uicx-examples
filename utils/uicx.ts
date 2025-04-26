@@ -1,6 +1,8 @@
 export type Configuration = {
     baseURL: string,
     webviewBaseURL: string,
+    headerTitle: string,
+    headerImage?: string,
     deeplinks: {
         "/": string
         [path: string]: string
@@ -11,8 +13,9 @@ export type Configuration = {
     preload?: Partial<{
         stylesheets: string[],
         javascripts: string[]
-    }>
-}
+    }>,
+    variables?: object
+};
 
 export function isConfiguration(source: any): source is Configuration {
     if (typeof source !== 'object') return false;
@@ -32,6 +35,7 @@ export function isConfiguration(source: any): source is Configuration {
 }
 
 export type WebView = {
+    renderEngine?: 'hbs';
     contentTemplate: string;
     headTemplate?: string;
     stylesheets?: string[];
@@ -40,10 +44,26 @@ export type WebView = {
 
 export function isWebView(source: any): source is WebView {
     if (typeof source !== 'object') return false;
+    if (typeof source?.renderEngine === 'string' && ['hbs'].indexOf(source.renderEngine) === -1) {
+        console.warn(`Unknown render engine  \`${source.renderEngine}\``);
+        return false
+    };
     if (typeof source?.contentTemplate !== 'string') return false;
     if (typeof source?.headTemplate !== 'string') console.warn('You should define `headTemplate` in your response.');
     if (Array.isArray(typeof source?.stylesheets) && source.stylesheets.every((val: any) => typeof val === 'string')) return false;
     if (Array.isArray(typeof source?.javascripts) && source.javascripts.every((val: any) => typeof val === 'string')) return false;
 
     return true;
+}
+
+export async function renderContent(engine: Required<WebView['renderEngine']>, content: string, vars = {}): Promise<string> {
+    switch (engine) {
+        case 'hbs': {
+            const {compile} = await import('handlebars');
+            const template = compile(content)
+            return template({vars});
+        }
+    }
+
+    return 'Unable to parse template';
 }

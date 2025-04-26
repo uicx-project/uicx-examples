@@ -1,6 +1,6 @@
 import React from "react";
-import {AppContext} from "./AppContext";
-import {isWebView} from "./uicx";
+import {Configuration, isWebView, renderContent} from "./uicx";
+import {useApp} from "../state/app";
 
 export enum State {
     Initializing,
@@ -10,7 +10,7 @@ export enum State {
 }
 
 export function useUICX(path: string, options: {lazy: boolean} = {lazy: false}): [state: State, content: string | null, reload: () => void] {
-    const {baseURL, deeplinks} = React.useContext(AppContext);
+    const {baseURL, deeplinks, variables} = useApp(state => state.configuration as Configuration);
 
     let url = `${baseURL.replace(/\/$/, '')}/${path.replace(/^\//, '')}`;
 
@@ -31,7 +31,7 @@ export function useUICX(path: string, options: {lazy: boolean} = {lazy: false}):
                 const data = await res.json();
 
                 if (isWebView(data)) {
-                    setContent(`<!DOCTYPE html>
+                    let content = `<!DOCTYPE html>
 <html>
   <head>
     <meta charset="UTF-8">
@@ -42,7 +42,12 @@ export function useUICX(path: string, options: {lazy: boolean} = {lazy: false}):
   <body>
     ${data.contentTemplate}
   </body>
-</html>`);
+</html>`;
+                    if (data.renderEngine) {
+                        content = await renderContent(data.renderEngine, content, variables);
+                    }
+
+                    setContent(content);
                     setState(State.Valid);
                 } else {
                     setState(State.Errored);
