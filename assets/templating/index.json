@@ -1,0 +1,7 @@
+---
+---
+{
+  "renderEngine": "hbs",
+  "contentTemplate": "<p>Hello from index.json.</p><p>{{ vars.os }}</p>",
+  "headTemplate": "<title>index.json</title>"
+}
