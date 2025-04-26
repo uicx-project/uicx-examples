@@ -1,6 +1,7 @@
 ---
 ---
 {
+    "headerTitle": "Tabbed UICX",
     "baseURL": "{{ "/assets/simple/" | absolute_url }}",
     "webviewBaseURL": "{{ "/assets/simple/" | absolute_url }}",
     "deeplinks": {
