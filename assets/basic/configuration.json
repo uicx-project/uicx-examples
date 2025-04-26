@@ -1,0 +1,9 @@
+---
+---
+{
+  "baseURL": "{{ "/assets/basic/" | absolute_url }}",
+  "webviewBaseURL": "{{ ",/assets/basic/" | absolute_url }}",
+  "deeplinks": {
+    "/": "{{ "/index.json?v=" | append: site.github.build_revision }}"
+  }
+}
