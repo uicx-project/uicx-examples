@@ -2,6 +2,6 @@
 ---
 {
   "renderEngine": "hbs",
-  "contentTemplate": "<p>Hello from index.json.</p><p>{{ vars.os }}</p>",
+  "contentTemplate": "<p>Hello from index.json#{{ vars.gitCommit }}.</p><p>{{ vars.os }}</p>",
   "headTemplate": "<title>index.json</title>"
 }

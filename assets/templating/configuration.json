@@ -5,5 +5,8 @@
   "webviewBaseURL": "{{ "/assets/templating/" | absolute_url }}",
   "deeplinks": {
     "/": "{{ "/index.json?v=" | append: site.github.build_revision }}"
+  },
+  "variables": {
+    "gitCommit": "{{ site.github.build_revision }}"
   }
 }
